@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<title>Warning</title>
+<head>
+</head>
+<body>
+<form method="POST">
+		{% csrf_token %}
+		{{form.name}}
+		<button type="submit">Filter</button>
+</form>
+    {% for x in comments %}
+	<br>
+	<div class="half"><b>{{ x.name }}:</b> {{ x.body }} </div>
+	{% endfor %}
+  
+<br>
+Go Back <a href="/"<p>Here</p></a>
+</body>
+</html>

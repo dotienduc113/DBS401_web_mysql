@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial;}
+form {border: 15px solid #f1f1f1;}
+
+input[type=text], input[type=password] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: SlateBlue;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+span.psw {
+  float: right;
+  padding-top: px;
+}
+
+</style>
+</head>
+<body>
+
+<h2>Sign Up Form</h2>
+
+    <form method="POST" action="">
+    {% csrf_token %}
+    <label for="uname"><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" {{form.username}}
+    <label for="psw"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" {{form.password1}}
+    <label for="psw"><b>Confirm Password</b></label>
+    <input type="password" placeholder="Re-Enter Password" {{form.password2}}
+
+    <button type="submit">Create Account</button>
+
+    <div style="background-color:#f1f1f1">
+    <span class="psw">Already have an account? <a href="/accounts/login">Login here</a></span>
+    <a href="/">Back</a>
+    </form>
+
+</body>
+</html>

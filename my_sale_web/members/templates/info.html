@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<title>Info</title>
+<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{% static '/assets/css/main.css' %}"/>
+		<noscript><link rel="stylesheet" href="static/assets/css/noscript.css" /></noscript>
+<style>
+body {font-family: Arial;}
+
+input[type=text], input[type=password] {
+  width: 45%;
+  padding: 14px 25px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+<body>
+<h1>Find other Users</h1>
+<div>Search here:
+<br><br>
+<form method="POST">
+    {% csrf_token %}
+    {{form.username}}
+    <button type="Search">Filter</button>
+</form>
+	<div>{{ result }} </div>
+</div>
+<b>Get list all users <a href="/download/info">HERE</a></b>
+<br><br>
+<b><a href="/">Back</a></b>
+</body>
+</html>

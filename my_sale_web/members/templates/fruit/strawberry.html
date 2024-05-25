@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+	<title>Fruit</title>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> 
+		<link rel="stylesheet" href="{% static '/assets/css/main.css' %}"/> 
+		<noscript><link rel="stylesheet" href="static/assets/css/noscript.css" /></noscript>
+<style>
+body {font-family: Arial;}
+
+input[type=text], input[type=password] {
+  width: 45%;
+  padding: 14px 25px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+</style>
+
+</head>
+
+<body class="is-preload">
+
+
+    <body>
+        <h1>Fruit</h1>
+        <h3>Pineapple</h3>
+        <div>
+        <img src="https://i.imgur.com/CMLt6XO.jpg" width="140" height="200">
+        <img src="https://i.imgur.com/6YgfkjM.jpg" width="300" height="200">
+        <p>	&nbsp &nbsp &nbsp The garden strawberry (or simply strawberry; Fragaria × ananassa) is a widely grown hybrid species of the genus Fragaria, collectively known as the strawberries, which are cultivated worldwide for their fruit. The fruit is widely appreciated for its characteristic aroma, bright red color, juicy texture, and sweetness. It is consumed in large quantities, either fresh or in such prepared foods as jam, juice, pies, ice cream, milkshakes, and chocolates. Artificial strawberry flavorings and aromas are also widely used in products such as candy, soap, lip gloss, perfume, and many others.</p>
+		<b><a href="/">Back</a></b>
+    </div>
+    <div>
+		<br><br>
+        <lable><b>Comment: </b></lable>
+		<div>
+		{% csrf_token %}
+        {% if user.is_authenticated %}
+		<form method="POST" >
+		<div> Post as {{user.username}} </div> <br>
+		{% csrf_token %}
+		{{ form.body }}
+        <button type="submit">Post</button>
+		</form>
+        {% else %}
+			{{ request.user.username }}
+			Login to comment!
+			<a href = "/accounts/login">Login here</a>
+		{% endif %}
+		</div>
+    </div>
+	<div>
+      <form method="POST" >
+      {% csrf_token %}
+      {{ form2.name }}
+      <button type="submit">Filter</button>
+      </form>
+    </div>
+	{% for x in comments %}
+	<div><b>{{ x.name }}:</b> {{ x.body }} </div>
+	{% endfor %}
+	</body>
+
+</html>

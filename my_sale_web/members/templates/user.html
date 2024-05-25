@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<title>Profile</title>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="{% static '/assets/css/main.css' %}"/>
+	<noscript><link rel="stylesheet" href="static/assets/css/noscript.css" /></noscript>
+<style>
+  button {
+  font-style: Arial;
+  background-color: rgb(204, 0, 0);
+  color: white;
+  padding: 15px 10px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 10%;
+}
+</style>
+</head>
+<body>
+<h1>Profile</h1>
+<div>
+    <img src="https://i.imgur.com/EleN1Pb.png" width = "150", height = "150">
+    <p>
+        <b>Username: </b> {{myuser.username}}
+    </p>
+	<br>
+    <form method="POST">
+        {% csrf_token %}
+        {% if user.is_staff != 1 %}
+        <button type="submit">Delete Account</button>
+        {% endif %}
+    </form>
+    <a href='/' ><b>Back</b> </a>
+</div>
+</body>
+</html>

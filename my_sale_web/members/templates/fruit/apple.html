@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+	<title>Fruit</title>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> 
+		<link rel="stylesheet" href="{% static '/assets/css/main.css' %}"/> 
+		<noscript><link rel="stylesheet" href="static/assets/css/noscript.css" /></noscript>
+<style>
+body {font-family: Arial;}
+
+input[type=text], input[type=password] {
+  width: 45%;
+  padding: 14px 25px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+</style>
+
+</head>
+
+<body class="is-preload">
+
+    <body>
+        <h1>Fruit</h1>
+        <h3>Apple</h3>
+        <div>
+        <img src="https://i.imgur.com/puD9t0x.png" width="145" height="170">
+        <img src="https://i.imgur.com/BGw0Y8V.jpeg" width="190" height="170">
+        <img src="https://i.imgur.com/eHV5S7F.jpeg" width="250" height="170">
+        <p>	&nbsp &nbsp &nbsp An apple is a round, edible fruit produced by an apple tree (Malus spp., among them the domestic or orchard apple; Malus domestica). Apple trees are cultivated worldwide and are the most widely grown species in the genus Malus. The tree originated in Central Asia, where its wild ancestor, Malus sieversii, is still found. Apples have been grown for thousands of years in Asia and Europe and were introduced to North America by European colonists. Apples have religious and mythological significance in many cultures, including Norse, Greek, and European Christian tradition.<br>Apples grown from seed tend to be very different from those of their parents, and the resultant fruit frequently lacks desired characteristics. For commercial purposes, including botanical evaluation, apple cultivars are propagated by clonal grafting onto rootstocks. Apple trees grown without rootstocks tend to be larger and much slower to fruit after planting. Rootstocks are used to control the speed of growth and the size of the resulting tree, allowing for easier harvesting.</p>
+    <b><a href="/">Back</a></b>
+    </div>
+    <div>
+		<br><br>
+        <lable><b>Comment: </b></lable>
+		<div>
+		{% csrf_token %}
+        {% if user.is_authenticated %}
+		<form method="POST" >
+		<div> Post as {{user.username}} </div> <br>
+		{% csrf_token %}
+		{{ form.body }}
+        <button type="submit">Post</button>
+		</form>
+        {% else %}
+			{{ request.user.username }}
+			Login to comment!
+			<a href = "/accounts/login">Login here</a>
+		{% endif %}
+		</div>
+    </div>
+	<div>
+    <form method="POST" >
+		{% csrf_token %}
+		{{ form2.name }}
+		<button type="submit">Filter</button>
+    </form>
+	</div>
+	{% for x in comments %}
+	<div><b>{{ x.name }}:</b> {{ x.body }} </div>
+	{% endfor %}
+	</body>
+
+</html>
