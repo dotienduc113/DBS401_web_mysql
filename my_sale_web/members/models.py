@@ -14,7 +14,7 @@ class Comment(models.Model):
     #xss = models.TextField(null=True)
 
 class Filter(models.Model):
-    name = models.CharField(blank=True, null=True, max_length=80)
+    name = models.CharField(blank=True, null=True, max_length=150)
     number = models.IntegerField(null=True)
 
 class File(models.Model):
@@ -22,5 +22,5 @@ class File(models.Model):
     date = models.DateTimeField(null=True)
     file = models.FileField(upload_to="E:\\Web\\my_sale_web\\static")
 
-class Confirm(models.Model):
-    confirm = models.CharField(max_length=80, null=True)
+#class Confirm(models.Model):
+    #confirm = models.CharField(max_length=80, null=True)

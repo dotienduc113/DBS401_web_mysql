@@ -14,6 +14,7 @@ from django.views.generic import TemplateView, ListView
 from datetime import datetime
 import os
 from django.core.files.storage import FileSystemStorage
+import re
 
 
 def members(request):
@@ -102,11 +103,14 @@ def comment_form(request):
             return redirect('/fruit/banana')
         elif form2.is_valid():
             c = str(form2.cleaned_data['name'])
+            c = c.strip()
             # ' or '1' = '1
-            block1 = "' and "
-            block2 = "' or " 
+            block1 = "' and"
+            block2 = "' or" 
             if block1 in c or block2 in c:
                 return redirect('/fruit/banana')    
+            if c.endswith("'") or c.endswith("-"):
+                return redirect('/fruit/banana')   
             comments = Comment.objects.raw("select * from members_comment where number = 1 and name = '{}' ".format(c))
             context = {
                 'comments': comments,
@@ -137,11 +141,14 @@ def comment_form_strawberry(request):
             return redirect('/fruit/strawberry')
         elif form2.is_valid():
             c = str(form2.cleaned_data['name'])
+            c = c.strip()
             # ' or '1' = '1' -- -
-            block1 = "' and "
-            block2 = "' or " 
+            block1 = "' and"
+            block2 = "' or" 
             if block1 in c or block2 in c:
-                return redirect('/fruit/strawberry')    
+                return redirect('/fruit/strawberry')
+            if c.endswith("'") or c.endswith("-"):
+                return redirect('/fruit/strawberry') 
             comments = Comment.objects.raw("select * from members_comment where number = 3 and name = '{}' ".format(c))
             context = {
                 'comments': comments,
@@ -172,11 +179,14 @@ def comment_form_pineapple(request):
             return redirect('/fruit/pineapple')
         elif form2.is_valid():
             c = str(form2.cleaned_data['name'])
+            c = c.strip()
             # ' or '1' = '1
-            block1 = "' and "
-            block2 = "' or " 
+            block1 = "' and"
+            block2 = "' or" 
             if block1 in c or block2 in c:
-                return redirect('/fruit/pineapple')    
+                return redirect('/fruit/pineapple')   
+            if c.endswith("'") or c.endswith("-"):
+                return redirect('/fruit/pineapple')
             comments = Comment.objects.raw("select * from members_comment where number = 2 and name = '{}' ".format(c))
             context = {
                 'comments': comments,
@@ -209,10 +219,12 @@ def comment_form_apple(request):
         elif form2.is_valid():
             c = str(form2.cleaned_data['name'])
             # ' or '1' = '1
-            block1 = "' and "
-            block2 = "' or " 
+            block1 = "' and"
+            block2 = "' or" 
             if block1 in c or block2 in c:
-                return redirect('/fruit/apple')    
+                return redirect('/fruit/apple')
+            if c.endswith("'") or c.endswith("-"):
+                return redirect('/fruit/apple')
             comments = Comment.objects.raw("select * from members_comment where number = 4 and name = '{}' ".format(c))
             context = {
                 'comments': comments,
@@ -228,6 +240,7 @@ def comment_form_apple(request):
     context.update({"form2": form2})
     return HttpResponse(render(request, 'fruit/apple.html', context))
 
+'''
 def user(request, id):
     try:
         myuser = User.objects.get(id=id)
@@ -242,9 +255,9 @@ def user(request, id):
         return HttpResponse(template.render(context, request))
     except:
         return HttpResponse(render(request, 'blank.html'))
+'''
 
-
-'''def user(request, id):
+def user(request, id):
     myuser = User.objects.get(id=id)
     template = loader.get_template('user.html')
     context = {
@@ -255,7 +268,7 @@ def user(request, id):
         return HttpResponse(template.render(context, request))
     else:
         template = loader.get_template('blank.html')
-        return HttpResponse(template.render(context, request))'''
+        return HttpResponse(template.render(context, request))
 
 
 def filter_comment(request):
@@ -274,6 +287,11 @@ def filter_comment(request):
     return render(request, 'filter.html', {'form': form2})
 
 
+pattern = r'^[a-zA-Z0-9]+$'
+
+def is_valid(s):
+    return bool(re.match(pattern, s))
+
 def Info_User(request):
     info = InfoUser()
     if request.method == 'POST':
@@ -282,9 +300,13 @@ def Info_User(request):
         for word in ifo:
             if word == '&' or word == '|' or word == ',' or word ==  '`' or word == '$' or word == '(' or word == '%' or word == '#' or word == '^':
                return HttpResponse(render(request, 'failed_info.html'))
+        if is_valid(ifo):
+            command = "grep {} info".format(ifo) 
+        else: 
+            return HttpResponse(render(request, 'failed_info.html'))
         # & whoami &
         # & cd ../../../ & curl http://127.0.0.1:8000/search/ > 2.txt ||
-        command = "FINDSTR {} userinfo.txt".format(ifo) #windows
+        #command = "FINDSTR {} userinfo.txt".format(ifo) #windows    
         try:
             result = subprocess.check_output(command, shell=True, encoding='UTF-8')
             context = {
@@ -336,6 +358,7 @@ def FileUpload(request):
 
 
 def File_Download(request, file_path):
+    file_path=request.GET.get('a', None)
     block = "../"
     block1 = "/./"
     block2 = ".//"
@@ -345,11 +368,10 @@ def File_Download(request, file_path):
         file_path = file_path.replace(block1,"")
     elif block in file_path:
         file_path = file_path.replace(block,"")
-    file_path = os.path.dirname(os.path.realpath('info')) + '/' + file_path
+    file_path = "/home/dotienduc113/DBS401_web_mysql/my_sale_web/" + file_path
     #print(file_path)
-    response = request.POST.get(file_path)
     if not os.path.exists(file_path):
-        return HttpResponse("File not found.", status=404)
+        return HttpResponse("404 Not Found.", status=404)
 
     # Open the file and read its content
     with open(file_path, 'rb') as file:
@@ -357,7 +379,7 @@ def File_Download(request, file_path):
 
     # Create the HTTP response with the file content and appropriate headers
     response = HttpResponse(file_content, content_type='application/octet-stream')
-    response['Content-Disposition'] = 'attachment; filename="userinfo.txt"'
+    response['Content-Disposition'] = 'attachment; filename="info.txt"'
     
     return response
 
