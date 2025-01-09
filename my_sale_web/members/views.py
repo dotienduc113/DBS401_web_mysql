@@ -1,5 +1,5 @@
 import subprocess
-
+from django.conf import settings
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Member, Comment, File
@@ -12,9 +12,11 @@ from django.contrib.auth.models import User
 from django.db import connection
 from django.views.generic import TemplateView, ListView
 from datetime import datetime
+from .forms import UpFile
 import os
 from django.core.files.storage import FileSystemStorage
 import re
+from .forms import MyModelForm
 
 
 def members(request):
@@ -103,14 +105,14 @@ def comment_form(request):
             return redirect('/fruit/banana')
         elif form2.is_valid():
             c = str(form2.cleaned_data['name'])
-            c = c.strip()
+            #c = c.strip()
             # ' or '1' = '1
-            block1 = "' and"
-            block2 = "' or" 
-            if block1 in c or block2 in c:
-                return redirect('/fruit/banana')    
-            if c.endswith("'") or c.endswith("-"):
-                return redirect('/fruit/banana')   
+            #block1 = "' and"
+            #block2 = "' or" 
+            #if block1 in c or block2 in c:
+                #return redirect('/fruit/banana')    
+            #if c.endswith("'") or c.endswith("-"):
+                #return redirect('/fruit/banana')   
             comments = Comment.objects.raw("select * from members_comment where number = 1 and name = '{}' ".format(c))
             context = {
                 'comments': comments,
@@ -344,20 +346,47 @@ def FileUpload(request):
     }
 
     return render(request, 'upload.html', {"form": file})
-'''
 
+'''
 
 def FileUpload(request):
     context = {}
     if request.method == "POST":
         upload_file = request.FILES['document']
+        name = str(upload_file.name).replace("\\", "/")
+        path = "E:\\Study\\DBS401_web_mysql\\my_sale_web\\my_sale_web\\media\\" 
+        new_path = os.path.join(path, name)
+        file_exists = os.path.exists(new_path)
+       #print(os.path.join(os.path.abspath(name),"\\my_sale_web\\my_sale_web\\media\\"))
+        if file_exists:
+            os.remove(new_path) 
         fs = FileSystemStorage()
         name = fs.save(upload_file.name, upload_file)
         context['url'] = fs.url(name)
     return render(request, 'upload.html', context)
 
+'''
+def FileUpload(request):
+    if request.method == 'POST':
+        form = UpFile(request.POST, request.FILES)
+        file = request.FILES
+        name = str(file.name).replace("\\", "/")
+        if os.path.exists(name):
+            print(1)
+            os.remove(name)
 
-def File_Download(request, file_path):
+        fs = FileSystemStorage()
+        fs.save(file.name, file)
+
+    else:
+        form = UpFile()
+    
+    return render(request, 'upload.html', {'form':form})
+
+'''
+
+
+def File_Download(request):
     file_path=request.GET.get('a', None)
     block = "../"
     block1 = "/./"
@@ -368,11 +397,11 @@ def File_Download(request, file_path):
         file_path = file_path.replace(block1,"")
     elif block in file_path:
         file_path = file_path.replace(block,"")
-    file_path = "/home/dotienduc113/DBS401_web_mysql/my_sale_web/" + file_path
+    #input file path here
+    file_path = "DBS401_web_mysql\\my_sale_web\\" + file_path
     #print(file_path)
     if not os.path.exists(file_path):
         return HttpResponse("404 Not Found.", status=404)
-
     # Open the file and read its content
     with open(file_path, 'rb') as file:
         file_content = file.read()

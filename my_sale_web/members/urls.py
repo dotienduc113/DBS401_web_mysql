@@ -25,8 +25,8 @@ urlpatterns = [
     path("file/", views.FileUpload, name="file"),
     path("generic/", views.generic, name="generic"),
     #path("", TemplateView.as_view(template_name="generic.html"), name="generic"),
-    path("download/<path:file_path>", views.File_Download, name='Download'),
+    path("download/", views.File_Download, name='Download'),
     #path('confirm/', views.All_Users, name='confirm'),
-]
-if settings.DEBUG:
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if not settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

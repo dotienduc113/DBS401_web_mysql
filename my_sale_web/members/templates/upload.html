@@ -11,7 +11,7 @@
 <body>
 <h1>File Upload</h1>
 <h3>Upload here: </h3>
-<form method="POST" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data">
 	{% csrf_token %}
 	<input type="file" name="document">
     <button type="summit">Upload</button>
